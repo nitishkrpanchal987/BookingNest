@@ -1,0 +1,54 @@
+spring:
+  data:
+    mongodb:
+      host: ${MONGO_1_DB_HOST:localhost}
+      port: ${MONGO_1_DB_PORT:27017}
+      database: ${MONGO_1_DB_NAME:irctc_customer}
+      username: ${MONGO_1_DB_USERNAME:irctc}
+      password: ${MONGO_1_DB_PASSWORD:password}
+      authentication-database: ${MONGO_1_DB_AUTH_DATABASE:admin}
+  cloud:
+    discovery:
+      enabled: true
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: resilience4j.circuitbreakers,health,info
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  retry:
+    instances:
+      irctcCoreRetry:
+        maxAttempts: 3
+        waitDuration: 1s
+        retryExceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - java.net.ConnectException
+          - java.io.IOException
+          - java.lang.RuntimeException
+  circuitbreaker:
+    instances:
+      irctcCoreCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+
+server:
+  port: ${IRCTC_CUSTOMER_SERVICE_PORT:9001}
