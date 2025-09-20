@@ -29,6 +29,7 @@ A scalable, modular event booking and reservation system built using Java Spring
 ## 📁 Project Structure
 eventease/
 │
+---
 ├── apps/                   # Main services
 │   ├── admin-service/
 │   ├── api-gateway/
@@ -36,9 +37,11 @@ eventease/
 │   ├── booking-service/
 │   └── event-service/
 │
+---
 ├── libs/                   
 │   └── irctc_common/       # Shared logic and utilities
 │
+---
 ├── deployment/             # Docker + deployment configs
 ├── .mvn/                   # Maven wrapper folder
 ├── mvnw / mvnw.cmd         # Maven wrapper scripts
